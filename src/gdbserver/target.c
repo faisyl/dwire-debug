@@ -65,7 +65,7 @@ int target_continue(int fd)
 
 int target_reset(void)
 {
-    DwReset();
+    DwReset_delayed();
 
     return 0;
 }

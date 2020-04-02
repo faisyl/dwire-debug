@@ -290,6 +290,15 @@ void DigisparkSync(struct UPort *up) {
   if (!SetDwireBaud(up)) {PortFail(up, "Could not read back timings following transfer and sync command");}
 }
 
+// Delayed pulse capture
+void DigisparkSync_delayed(struct UPort *up) {
+  // New command implemented on usbtiny for delayed pulse capture.
+  // Sending out byte from buffer dwWrite() after waiting 50ms and execute the pulse capture function 
+  digisparkBufferFlush(up, 0x44);
+  // Reading pulse capture result from usbtiny
+  if (!SetDwireBaud(up)) {PortFail(up, "Could not read back timings following transfer and sync command");}
+}
+
 void DigisparkWait(struct UPort *up) {
   digisparkBufferFlush(up, 0x0C);  // Send bytes and wait for dWIRE line state change
 }

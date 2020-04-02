@@ -483,7 +483,7 @@ uchar usbFunctionWrite(uchar *data, uchar len)
 
 
 /*
-  Bitbang WS2812 write - T. Böscke May 26th, 2013
+  Bitbang WS2812 write - T. Bï¿½scke May 26th, 2013
              - clean up May 27th, 2013
 
   This routine writes an array of bytes with RGB values to the Dataout pin
@@ -492,13 +492,13 @@ uchar usbFunctionWrite(uchar *data, uchar len)
   The order of the color-data is GRB 8:8:8. Serial data transmission begins
   with the most significant bit in each byte.
 
-  The total length of each bit is 1.25µs (20 cycles @ 16Mhz)
-  * At 0µs the dataline is pulled high.
-  * To send a zero the dataline is pulled low after 0.375µs (6+1 cycles).
-  * To send a one the dataline is pulled low after 0.625µs (10+1 cycles).
+  The total length of each bit is 1.25ï¿½s (20 cycles @ 16Mhz)
+  * At 0ï¿½s the dataline is pulled high.
+  * To send a zero the dataline is pulled low after 0.375ï¿½s (6+1 cycles).
+  * To send a one the dataline is pulled low after 0.625ï¿½s (10+1 cycles).
 
   After the entire bitstream has been written, the dataout pin has to remain low
-  for at least 50µs (reset condition).
+  for at least 50ï¿½s (reset condition).
 
 */
 #define ws2812_port PORTB   // Data port register
@@ -956,7 +956,7 @@ uchar usbFunctionSetup(uchar data[8])
   }
 #endif
 
-// WS2812 Support - T. Böscke May 26th, 2013
+// WS2812 Support - T. Bï¿½scke May 26th, 2013
   if( req == 54 ) /* WS2812_write */
   {
     if ((data[2]&0x20)&&(ws2812_ptr<ws2812_maxleds*3))  // bit 5 set = add to buffer
@@ -1917,6 +1917,7 @@ int main(void) {
         //     00001000   0x08     Wait for start bit
         //     00010000   0x10     Read bytes
         //     00100000   0x20     Read pulse widths
+        //     01000000   0x40     delayed pulse widths read
         //
         // Supported combinations
         //    $21 - Send break and read pulse widths
@@ -1925,6 +1926,7 @@ int main(void) {
         //    $0C - Send bytes and wait for dWIRE line state change
         //    $14 - Send bytes and read response (normal command)
         //    $24 - Send bytes and receive 0x55 pulse widths
+        //    $44 - Send bytes, wait, and receive 0x55 pulse widths
         //
         // Note that the wait for start bit loop also monitors the dwState wait for start
         // bit flag, and is arranged so that sending a 33 (send break and read pulse widths)
@@ -1947,6 +1949,7 @@ int main(void) {
         if (dwState & 0x08) {dwBuf[0]=0; dwLen=1; cbi(DDRB,5); sbi(PCMSK,5); sei();} // Capture dWIRE pin change
         if (dwState & 0x10) {dwReadBytes();}
         if (dwState & 0x20) {dwCaptureWidths();}
+        if (dwState & 0x40) { _delay_ms(50); dwCaptureWidths();}
 
         jobState = 0;
         dwState  = 0;

@@ -49,6 +49,14 @@ void DwSync(void) {
     DigisparkSync((struct UPort*)Ports[CurrentPort]);
 }
 
+// This is only necesearly for usbtiny
+void DwSync_delayed(void) {
+  if (CurrentPortKind() == 's')
+    SerialSync((struct SPort*)Ports[CurrentPort]);
+  else
+    DigisparkSync_delayed((struct UPort*)Ports[CurrentPort]);
+}
+
 void DwWait(void) {
   if (CurrentPortKind() == 's')
     SerialWait((struct SPort*)Ports[CurrentPort]);
@@ -180,6 +188,13 @@ void DwReconnect(void) {
 void DwReset(void) {
   DwSend(Bytes(0x07));  // dWIRE reset
   DwSync();
+  DwReconnect();
+}
+
+// We need extra delay to capture baudrate
+void DwReset_delayed(void) {
+  DwSend(Bytes(0x07));  // dWIRE reset
+  DwSync_delayed();
   DwReconnect();
 }
 

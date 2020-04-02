@@ -82,7 +82,7 @@ struct {char *name; char *help; int requiresConnection; void (*handler)();} Comm
   {"td",          "Timer disable",                                 1, TimerDisableCommand},
   {"u",           "Unassemble",                                    1, UnassembleCommand},
   {"h",           "Help",                                          0, HelpCommand},
-  {"reset",       "Reset processor",                               1, DwReset},
+  {"reset",       "Reset processor",                               1, DwReset_delayed},
   {"device",      "Connect to named device",                       0, DeviceCommand},
   {"config",      "Display fuses and lock bits",                   1, DumpConfig},
   {"help",        "Help",                                          0, HelpCommand},
